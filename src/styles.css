@@ -4,3 +4,18 @@
 .container{
     margin-top:10px;
 }
+.no-border{
+    border: 0px;
+}
+.pull-left{
+    float: left;
+}
+.pull-right{
+    float: right;
+}
+.clear-all{
+    clear: both;
+}
+.red{
+    color: red;
+}

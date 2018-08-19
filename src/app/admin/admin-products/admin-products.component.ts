@@ -1,3 +1,5 @@
+import { Router } from '@angular/router';
+
 import { Component, OnInit } from '@angular/core';
 
 @Component({
@@ -7,9 +9,11 @@ import { Component, OnInit } from '@angular/core';
 })
 export class AdminProductsComponent implements OnInit {
 
-  constructor() { }
+  constructor(private router: Router) { }
 
   ngOnInit() {
   }
-
+  newProduct() {
+    this.router.navigate(['/admin/products/new']);
+  }
 }

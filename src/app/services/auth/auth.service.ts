@@ -1,3 +1,5 @@
+'use strict';
+
 import { UserRole } from './../../models/user-roles';
 import { UserService } from './../user/user.service';
 
@@ -22,7 +24,6 @@ export class AuthService {
     private route: ActivatedRoute
   ) {
      this.user$ = afAuth.authState;
-    // this.user$ = firebase.auth().currentUser;
    }
 
   login() {
@@ -45,8 +46,6 @@ export class AuthService {
     .pipe(
       switchMap(user => {
         if (user) {
-          console.log('AppUser');
-          console.log(user.uid);
           return this.userService.getUser(user.uid);
         }
 
@@ -55,13 +54,11 @@ export class AuthService {
     );
   }
 
-  get userRoles$(): Observable<UserRole> {
+  get userRole$(): Observable<UserRole> {
     return this.user$
     .pipe(
       switchMap(user => {
         if (user) {
-          console.log('UserRoles');
-          console.log(user.uid);
           return this.userService.getRoles(user.uid);
         }
 

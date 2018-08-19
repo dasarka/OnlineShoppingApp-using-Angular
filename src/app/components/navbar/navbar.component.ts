@@ -17,7 +17,7 @@ export class NavbarComponent {
     authService.appUser$.subscribe(user => {
       this.appUser = user;
     });
-    authService.userRoles$.subscribe(role => {
+    authService.userRole$.subscribe(role => {
       this.userRole = (role === null) ? {admin: false} : role;
     });
    }

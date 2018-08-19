@@ -1,0 +1,97 @@
+<div class="row">
+  <!--New product card-->
+  <div class="col-6">
+    <div class="card">
+      <div class="card-body">
+        <form [formGroup]="productForm" (ngSubmit)="saveProduct()">
+          <div class="form-group">
+              <label for="title">
+                Title<span class="red">*</span>
+              </label>
+              <input 
+                  formControlName="title"
+                  id="title" 
+                  type="text" 
+                  class="form-control">
+              
+              <div class="alert alert-danger"
+                *ngIf="title.touched && title.invalid">
+                  Provide product title
+              </div>
+          </div>
+          <div class="form-group">
+              <label for="price">
+                Price<span class="red">*</span>
+              </label>
+              <div class="input-group">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text">₹</span>
+                  </div>
+                  <input 
+                  formControlName="price"
+                  id="price" 
+                  type="number" 
+                  class="form-control">
+                </div>
+              <div class="alert alert-danger"
+                *ngIf="price.touched && price.invalid">
+                  Provide product price
+              </div>
+          </div>
+          <div class="form-group">
+              <label for="category">
+                Category<span class="red">*</span>
+              </label>
+              <select id="category"
+                formControlName="selectedCategory"
+                class="form-control">
+                  <option *ngFor="let c of categories$ | async" [value]="c.id">
+                    {{c.name}}
+                  </option>
+              </select>
+              <div class="alert alert-danger"
+                *ngIf="selectedCategory.touched && selectedCategory.invalid">
+                  Choose category
+              </div>     
+          </div>
+          <div class="form-group">
+              <label for="imgUrl">
+                Image URL<span class="red">*</span>
+              </label>
+              <input 
+                  formControlName="imgUrl"
+                  id="imgUrl" 
+                  type="text" 
+                  class="form-control">
+              <div class="alert alert-danger"
+                *ngIf="imgUrl.touched && imgUrl.invalid">
+                  Provide product image url
+              </div> 
+          </div>
+          
+          <button 
+              [disabled]="productForm.invalid"
+              class="btn btn-primary pull-right"
+              type="submit">Save</button>
+
+          <button 
+              *ngIf='removeFlag'
+              class="btn btn-outline-primary"
+              type="button"
+              (click)="removeProduct()">Delete</button>
+        </form>
+      </div>
+    </div>
+  </div>
+  <!--display product-->
+  <div class="col-6">
+      <div class="card" 
+        [class.no-border]="imgUrl.invalid || title.invalid || price.invalid">
+          <img class="card-img-top" [src]="imgUrl.value" alt="">
+          <div class="card-body">
+            <h4 class="card-title">{{title.value}}</h4>
+            <p class="card-text">{{price.value | currency:'INR':true}}</p>
+          </div>
+        </div>
+  </div>
+</div>

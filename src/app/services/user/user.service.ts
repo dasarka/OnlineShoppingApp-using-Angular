@@ -2,7 +2,7 @@ import { Observable } from 'rxjs/Observable';
 import { Injectable } from '@angular/core';
 import { AngularFireDatabase, AngularFireObject} from 'angularfire2/database';
 import * as firebase from 'firebase';
-import { UserRoles } from '../../models/user-roles';
+import { UserRole } from '../../models/user-roles';
 import { AppUser } from '../../models/app-users';
 
 @Injectable({
@@ -21,7 +21,7 @@ export class UserService {
     });
   }
 
-  getRoles(uid: string): AngularFireObject<UserRoles> {
+  getRoles(uid: string): AngularFireObject<UserRole> {
     return this.db.object('/roles/' + uid).valueChanges();
   }
 
