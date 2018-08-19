@@ -1,5 +1,5 @@
 import { AppUser } from './../../models/app-users';
-import { UserRoles } from './../../models/user-roles';
+import { UserRole} from './../../models/user-roles';
 import { AuthService } from '../../services/auth/auth.service';
 import { Component, OnInit } from '@angular/core';
 
@@ -10,16 +10,15 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./navbar.component.css']
 })
 export class NavbarComponent {
-  user: AppUser;
-  role: UserRoles;
-  constructor(public authService: AuthService) {
+  appUser: AppUser;
+  userRole: UserRole;
+  constructor(private authService: AuthService) {
+    this.userRole = {admin: false};
     authService.appUser$.subscribe(user => {
-      this.user = user;
-      console.log(this.user);
+      this.appUser = user;
     });
     authService.userRoles$.subscribe(role => {
-      this.role = role;
-      console.log(this.role);
+      this.userRole = (role === null) ? {admin: false} : role;
     });
    }
 

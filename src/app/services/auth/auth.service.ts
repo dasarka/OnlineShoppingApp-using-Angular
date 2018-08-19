@@ -1,4 +1,4 @@
-import { UserRoles } from './../../models/user-roles';
+import { UserRole } from './../../models/user-roles';
 import { UserService } from './../user/user.service';
 
 import { Injectable } from '@angular/core';
@@ -47,7 +47,7 @@ export class AuthService {
         if (user) {
           console.log('AppUser');
           console.log(user.uid);
-          this.userService.getUser(user.uid);
+          return this.userService.getUser(user.uid);
         }
 
         return Observable.of(null);
@@ -55,14 +55,14 @@ export class AuthService {
     );
   }
 
-  get userRoles$(): Observable<UserRoles> {
+  get userRoles$(): Observable<UserRole> {
     return this.user$
     .pipe(
       switchMap(user => {
         if (user) {
           console.log('UserRoles');
           console.log(user.uid);
-          this.userService.getRoles(user.uid);
+          return this.userService.getRoles(user.uid);
         }
 
         return Observable.of(null);

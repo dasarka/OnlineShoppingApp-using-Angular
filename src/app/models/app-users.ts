@@ -1,5 +1,5 @@
 export interface AppUser {
-    name: string;
     email: string;
-    photo: string;
+    name: string;
+    photoUrl: string;
 }

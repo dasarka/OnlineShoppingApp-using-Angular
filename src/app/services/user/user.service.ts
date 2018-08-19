@@ -10,21 +10,22 @@ import { AppUser } from '../../models/app-users';
 })
 export class UserService {
 
-  constructor(private db: AngularFireDatabase) { }
+  constructor(private db: AngularFireDatabase) {
+  }
 
   save(user: firebase.User) {
     this.db.object('/users/' + user.uid).update({
       name : user.displayName,
       email : user.email,
-      photo : user.photoURL
+      photoUrl : user.photoURL
     });
   }
 
   getRoles(uid: string): AngularFireObject<UserRoles> {
-  return this.db.object('/roles/' + uid);
- }
+    return this.db.object('/roles/' + uid).valueChanges();
+  }
 
- getUser(uid: string): Observable<any> {
-  return this.db.object('/users/' + uid).valueChanges();
- }
+  getUser(uid: string): AngularFireObject<AppUser> {
+    return this.db.object('/users/' + uid).valueChanges();
+  }
 }

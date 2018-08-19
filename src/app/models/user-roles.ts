@@ -1,3 +1,3 @@
-export interface UserRoles {
+export interface UserRole {
     admin: boolean;
 }
