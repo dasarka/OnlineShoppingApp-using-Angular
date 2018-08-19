@@ -1,0 +1,9 @@
+nav{
+    height:50px;
+}
+.dropdown-toggle, #login{
+    cursor: pointer;
+}
+.dropdown-menu{
+    margin-right:10px;
+}
