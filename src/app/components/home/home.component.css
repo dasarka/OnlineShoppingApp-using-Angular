@@ -1,0 +1,13 @@
+.col-4{
+    margin-top:5px;
+    margin-bottom:25px;
+}
+.card{
+    width: 16rem;
+}
+img{
+    height: 10rem;
+}
+.list-group-item, .favIcon{
+    cursor: pointer;
+}

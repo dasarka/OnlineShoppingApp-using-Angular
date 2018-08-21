@@ -1,5 +1,3 @@
-'use strict';
-
 import { UserRole } from './../../models/user-roles';
 import { UserService } from './../user/user.service';
 

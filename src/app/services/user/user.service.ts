@@ -21,11 +21,11 @@ export class UserService {
     });
   }
 
-  getRoles(uid: string): AngularFireObject<UserRole> {
+  getRoles(uid: string): Observable<{}> {
     return this.db.object('/roles/' + uid).valueChanges();
   }
 
-  getUser(uid: string): AngularFireObject<AppUser> {
+  getUser(uid: string): Observable<{}> {
     return this.db.object('/users/' + uid).valueChanges();
   }
 }

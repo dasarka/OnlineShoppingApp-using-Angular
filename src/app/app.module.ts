@@ -11,6 +11,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {DataTableModule} from 'angular-6-datatable';
 // component
 // general
 import { AppComponent } from './app.component';
@@ -32,7 +33,7 @@ import { UserService } from './services/user/user.service';
 import { AuthService } from './services/auth/auth.service';
 // database
 // firebase integrtion modules
-import { AngularFireModule, FirebaseAppConfigToken } from 'angularfire2';
+import { AngularFireModule, FirebaseAppConfigToken, FirebaseAppNameToken } from 'angularfire2';
 import {AngularFireDatabaseModule} from 'angularfire2/database';
 import {AngularFireAuthModule} from 'angularfire2/auth';
 
@@ -104,17 +105,24 @@ const appRoutes: Routes = [
   imports: [
     BrowserModule,
     // firebase modules
-    AngularFireModule.initializeApp(environment.firebaseConfig, 'oshop'),
+    // production purpose
+     // AngularFireModule,
+    // dev purpose
+     AngularFireModule.initializeApp(environment.firebaseConfig, 'oshop'),
     AngularFireDatabaseModule,
     AngularFireAuthModule,
     // bootstrap js module for angular
     NgbModule.forRoot(),
     [RouterModule.forRoot(appRoutes)],
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    DataTableModule
   ],
   providers: [
-    {provide: FirebaseAppConfigToken, useValue: environment.firebaseConfig},
+    // production purpose
+    //  {provide: FirebaseAppConfigToken, useValue: environment.firebaseConfig},
+    //  { provide: FirebaseAppNameToken, useValue: 'oShop' },
+    //  { provide: FirebaseAppConfigToken, useValue: undefined },
     AuthService,
     AuthGuard,
     AdminAuthGuard,

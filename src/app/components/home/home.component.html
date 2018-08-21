@@ -1,3 +1,45 @@
-<p>
-  home works!
-</p>
+<div class="row">
+  <div class="col-3">
+      <ul class="list-group">
+          <li class="list-group-item"
+            *ngFor="let c of categories"
+            [class.active]="activeItem===c.key"
+            (click)="filterProduct(c.key)">
+            {{c.name}}
+          </li>
+        </ul>
+  </div>
+  <div class="col-9">
+    <div class="row">
+      <div class="col-4"
+        *ngFor="let p of filteredProducts">
+          <div class="card">
+            <img class="card-img-top" [src]="p.imgUrl" alt="Product Image">
+            <div class="card-body">
+                <div class="row">
+                  <p class="card-text  col-10">{{p.title}}</p>
+                  <span class="col-2 favIcon">
+                      <i class="fa red" 
+                        [ngClass]="(favList[p.key]) ? 'fa-heart' : 'fa-heart-o'"
+                        (click)="addFavourite(p.key)"></i>
+                    </span>
+                </div>
+                <div *ngFor="let c of categories">
+                    <p class="card-text" *ngIf="c.key===p.selectedCategory">
+                        {{p.price| currency:'INR':true}} per {{c.unit}} 
+                        <br/>
+                        <strong>Note:-</strong>order min 1 {{c.unit}} 
+                    </p>
+                    
+                  </div>
+                <hr/>
+                <button class="btn btn-primary form-control">Add to Cart</button>
+            </div>
+          </div>
+      </div>
+     
+        
+        
+    </div>
+  </div>
+</div>
