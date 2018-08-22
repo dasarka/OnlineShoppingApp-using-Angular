@@ -31,7 +31,7 @@
       <td>
         <div *ngFor="let c of categories">
           <div *ngIf="c.key===p.selectedCategory">
-              {{p.price | currency:'INR':true}} per {{c.unit}} 
+              {{p.price | currency:'INR':'symbol'}} per {{c.unit}} 
           </div>
         </div>
         </td>

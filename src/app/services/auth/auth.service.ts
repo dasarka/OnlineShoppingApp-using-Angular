@@ -1,5 +1,5 @@
-import { UserRole } from './../../models/user-roles';
-import { UserService } from './../user/user.service';
+import { UserRole } from '../../models/user-roles';
+import { UserService } from '../user/user.service';
 
 import { Injectable } from '@angular/core';
 import * as firebase from 'firebase';

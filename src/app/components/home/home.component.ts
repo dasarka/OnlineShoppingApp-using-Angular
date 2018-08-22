@@ -1,55 +1,49 @@
-import { Product } from './../../models/products';
-import { Subscription } from 'rxjs';
-import { ProductManagementService } from './../../services/product/product-management.service';
-import { Category } from './../../models/category';
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { Component } from '@angular/core';
+// Services
+import { ProductManagementService } from '../../services/product/product-management.service';
+// Models
+import { Product } from '../../models/product';
+// Observables
+import { switchMap, take } from 'rxjs/operators';
+
+/*
+**Developed By: Arka Das
+**Last Modified On: 22-08-2018
+*/
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css']
 })
-export class HomeComponent implements OnInit, OnDestroy {
-  activeItem: string;
-  categories: Category[];
-  private products: Product[];
+export class HomeComponent {
+  // ################## //
   filteredProducts: Product[];
-  subscription: Subscription;
-  subscription_1: Subscription;
   favList = {};
-  constructor(private prodManageService: ProductManagementService) {
-    this.activeItem = 'all';
-    this.subscription = this.prodManageService.getAllCategories()
-    .subscribe(c => {
-      this.categories = c;
-      this.categories.splice(0, 0, {
-        key: 'all',
-        name: 'All Categories',
-        unit: ''
-      });
-    });
-    this.subscription_1 = this.prodManageService.getAllProducts()
-      .subscribe(p => {
-        this.filteredProducts = this.products = p;
-        p.forEach(element => {
+  // ################## //
+  private products;
+  // ################## //
+  constructor(
+    private route: ActivatedRoute,
+    private prodManageService: ProductManagementService
+  ) {
+    // ################## //
+    prodManageService.getAll()
+      .pipe(
+        take(1),
+        switchMap(products => {
+        this.products = products;
+        this.products.forEach(element => {
           this.favList[element.key] = false;
         });
-      });
-  }
-
-  ngOnInit() {
-  }
-  ngOnDestroy() {
-    this.subscription.unsubscribe();
-    this.subscription_1.unsubscribe();
-  }
-
-  filterProduct(category: string) {
-    this.activeItem = category;
-    this.filteredProducts = (category === 'all') ? this.products :
-      this.products.filter(p => p.selectedCategory.toLowerCase().includes(category.toLowerCase())) ;
-  }
-  addFavourite(productId: string) {
-    this.favList[productId] = !this.favList[productId];
+        // ################## //
+        return route.queryParamMap;
+        })
+      ).subscribe(params => {
+          const category = ( params.get('category')) ? params.get('category') : 'all';
+          this.filteredProducts = (category === 'all') ? this.products :
+          this.products.filter(p => p.selectedCategory.toLowerCase().includes(category.toLowerCase())) ;
+        });
   }
 }

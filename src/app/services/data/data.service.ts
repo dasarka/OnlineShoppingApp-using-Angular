@@ -1,30 +1,35 @@
-import { Observable } from 'rxjs/Observable';
 import { Injectable } from '@angular/core';
-import { AngularFireDatabase,  AngularFireList, AngularFireObject } from 'angularfire2/database';
-import * as firebase from 'firebase';
-import { UserRole } from '../../models/user-roles';
-import { AppUser } from '../../models/app-users';
-
+// Firebase
+import { AngularFireDatabase} from 'angularfire2/database';
+// Observables
+import { Observable } from 'rxjs/Observable';
 import { map } from 'rxjs/operators';
+
+/*
+**Developed By: Arka Das
+**Last Modified On: 22-08-2018
+*/
 
 @Injectable({
   providedIn: 'root'
 })
 export class DataService {
-
+  // ################## //
   constructor(private db: AngularFireDatabase) {
   }
-
+  // ################## //
+  create(path: string, body: any) {
+    this.db.list(path).push(body);
+  }
+  // ################## //
   getAll(path: string, orderby ?: string) {
     if (orderby !== undefined) {
-      // Use snapshotChanges().map() to store the key
       return this.db.list(path, ref => ref.orderByChild(orderby)).snapshotChanges().pipe(
         map(changes => {
           return changes.map(c => ({ key: c.payload.key, ...c.payload.val() }));
         })
       );
     } else {
-      // Use snapshotChanges().map() to store the key
       return this.db.list(path).snapshotChanges().pipe(
         map(changes => {
           return changes.map(c => ({ key: c.payload.key, ...c.payload.val() }));
@@ -32,19 +37,15 @@ export class DataService {
       );
     }
   }
-
+  // ################## //
   get(path: string): Observable<{}>  {
     return this.db.object(path).valueChanges();
   }
-
+  // ################## //
   update (path: string, key: string, body: any) {
     this.db.list(path).set(key, body);
   }
-
-  create(path: string, body: any) {
-    this.db.list(path).push(body);
-  }
-
+  // ################## //
   remove(path: string, key: string) {
     return this.db.list(path).remove(key);
   }

@@ -99,19 +99,9 @@
   </div>
   <!--display product-->
   <div class="col-6">
-      <div class="card" 
-        [class.no-border]="imgUrl.invalid || title.invalid || price.invalid">
-          <img class="card-img-top" [src]="imgUrl.value" alt="Product Image">
-          <div class="card-body">
-            <h4 class="card-title">{{title.value}}</h4>
-            <div class="card-text">
-              <div *ngFor="let c of categories">
-                <p *ngIf="c.key===selectedCategory.value">
-                    {{price.value | currency:'INR':true}} per {{c.unit}} 
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
+      <app-product-card
+      [hideBorder]="imgUrl.invalid || title.invalid || price.invalid"
+      [product]="productForm.value"
+      ></app-product-card>
   </div>
 </div>

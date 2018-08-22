@@ -7,3 +7,7 @@ nav{
 .dropdown-menu{
     margin-right:10px;
 }
+.cart-item {
+    padding: 0px 10px;
+    color: #000;
+}

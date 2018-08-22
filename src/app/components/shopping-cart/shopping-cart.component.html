@@ -1,3 +1,43 @@
+<h2>
+  Shopping Cart
+</h2>
 <p>
-  shopping-cart works!
+  You have {{cartItemsCount}} items in your shopping cart
 </p>
+<table class="table">
+  <thead>
+    <tr>
+      <td></td>
+      <td>Product</td>
+      <td>Quantity</td>
+      <td>Price</td>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let items of cartItems">
+        <td>
+          <img [src]="items.imgUrl" class="rounded-circle">
+        </td>
+        <td>{{items.title}}</td>
+        <td>
+          <span class="fa fa-minus-square"
+          (click)="decreaseQuantity(items.key)"></span>
+          <span class="form-control-sm">{{items.count}}</span>
+          <span class="fa fa-plus-square"
+            (click)="increaseQuantity(items.key)"></span>
+        </td>
+        <td>{{items.price * items.count | currency:'INR':'symbol'}}</td>
+    </tr>
+  </tbody>
+  <tfoot>
+    <tr>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td>1234</td>
+    </tr>
+  </tfoot>
+
+</table>
+<button class="btn btn-sm btn-danger">Clear Shopping Cart</button>
+

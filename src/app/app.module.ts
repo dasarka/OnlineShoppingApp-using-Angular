@@ -1,5 +1,3 @@
-import { ProductManagementService } from './services/product/product-management.service';
-import { DataService } from './services/data/data.service';
 // environment
 import { environment } from '../environments/environment';
 // guard
@@ -17,7 +15,6 @@ import {DataTableModule} from 'angular-6-datatable';
 import { AppComponent } from './app.component';
 import { NavbarComponent } from './components/navbar/navbar.component';
 import { HomeComponent } from './components/home/home.component';
-import { ProductsComponent } from './components/products/products.component';
 import { ShoppingCartComponent } from './components/shopping-cart/shopping-cart.component';
 import { CheckOutComponent } from './components/check-out/check-out.component';
 import { OrderSuccessComponent } from './components/order-success/order-success.component';
@@ -31,21 +28,23 @@ import { NotFoundComponent } from './exceptions/not-found/not-found.component';
 // service
 import { UserService } from './services/user/user.service';
 import { AuthService } from './services/auth/auth.service';
+import { CategoryService } from './services/category/category.service';
+import { ProductManagementService } from './services/product/product-management.service';
+import { DataService } from './services/data/data.service';
 // database
 // firebase integrtion modules
 import { AngularFireModule, FirebaseAppConfigToken, FirebaseAppNameToken } from 'angularfire2';
 import {AngularFireDatabaseModule} from 'angularfire2/database';
 import {AngularFireAuthModule} from 'angularfire2/auth';
+import { ProductFilterComponent } from './common-assets/product-filter/product-filter.component';
+import { ProductCardComponent } from './common-assets/product-card/product-card.component';
+import { CartChangeComponent } from './common-assets/cart-change/cart-change.component';
 
 
 const appRoutes: Routes = [
   {
     path: '',
     component: HomeComponent
-  },
-  {
-    path: 'product',
-    component: ProductsComponent
   },
   {
     path: 'cart',
@@ -92,7 +91,6 @@ const appRoutes: Routes = [
     AppComponent,
     NavbarComponent,
     HomeComponent,
-    ProductsComponent,
     ShoppingCartComponent,
     CheckOutComponent,
     OrderSuccessComponent,
@@ -100,7 +98,10 @@ const appRoutes: Routes = [
     AdminProductsComponent,
     AdminOrdersComponent,
     NotFoundComponent,
-    ProductFormComponent
+    ProductFormComponent,
+    ProductFilterComponent,
+    ProductCardComponent,
+    CartChangeComponent
   ],
   imports: [
     BrowserModule,
@@ -128,8 +129,10 @@ const appRoutes: Routes = [
     AdminAuthGuard,
     UserService,
     DataService,
-    ProductManagementService
+    ProductManagementService,
+    CategoryService
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+ }

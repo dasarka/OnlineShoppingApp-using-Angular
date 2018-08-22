@@ -1,0 +1,10 @@
+<ul class="list-group">
+    <li class="list-group-item"
+      *ngFor="let c of categories"
+      [class.active]="activeItem===c.key"
+      (click)="activeItem=c.key"
+      [routerLink]="'/'"
+      [queryParams]="{ category: c.key} ">
+      {{c.name}}
+    </li>
+  </ul>

@@ -27,10 +27,15 @@
       </div>
     </li>
     <li class="nav-item">
-        <a class="nav-link" routerLink="/">Favourite</a>
+        <a class="nav-link" routerLink="/"><span class="fa fa-heart"></span></a>
       </li>
     <li class="nav-item">
-      <a class="nav-link" routerLink="/cart">Cart</a>
+      <a class="nav-link" routerLink="/cart">
+        <span class="fa fa-shopping-basket"></span>
+        <span class="cart-item rounded-circle bg-warning">
+            {{cartItemsCount}}
+        </span>
+      </a>
     </li>
   </ul>
 </nav>
