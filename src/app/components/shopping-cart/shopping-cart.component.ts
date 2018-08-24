@@ -1,48 +1,100 @@
+import { Observable } from 'rxjs/Observable';
+import { CartItem } from './../../models/cart-item';
+import { element } from 'protractor';
 import { AuthService } from './../../services/auth/auth.service';
 import { take } from 'rxjs/operators';
 import { ShoppingService } from './../../services/shopping/shopping.service';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterContentChecked} from '@angular/core';
 
 @Component({
   selector: 'app-shopping-cart',
   templateUrl: './shopping-cart.component.html',
   styleUrls: ['./shopping-cart.component.css']
 })
-export class ShoppingCartComponent implements OnInit {
-  cartItems;
-  cartItemsCount: string;
+export class ShoppingCartComponent implements OnInit, AfterContentChecked {
+
+  cartItems$;
+  // cartItemsCount = 0;
+  totalPrice = 0;
+  private userLoggedIn: boolean;
+  private uid: string;
   constructor(
     private authService: AuthService,
     private shoppingService: ShoppingService
   ) {
-    const itemsCount = localStorage.getItem('cart-item-count');
-    this.cartItemsCount = (itemsCount) ? itemsCount : '0';
-    this.readCartItems();
+    this.readCart();
   }
 
   ngOnInit() {}
-
-  private readCartItems() {
-    this.cartItems = this.shoppingService.getCart();
+  ngAfterContentChecked()  {
+    this.totalPrice = 0;
+    if (this.cartItems$ != null) {
+      this.cartItems$.forEach(item => {
+        this.totalPrice += item.price * item.count;
+      });
+    }
   }
 
-  private updateDatas() {
+  private readCart() {
     this.authService.user.subscribe(user => {
-      if (!user) {return; }
-      // ################## //
-      this.shoppingService.updateCart(user.uid);
+      if (!user) { this.userLoggedIn = false; }
+
+      this.uid = user.uid;
+      this.userLoggedIn = true;
+
+      if (!this.userLoggedIn) {
+        this.readFromLocal();
+      } else {
+        this.readFromDB();
+      }
     });
   }
 
-  increaseQuantity(productKey) {
-    this.shoppingService.updateCount(productKey, 1);
-    this.readCartItems();
-    this.updateDatas();
+  // private countTotalCartItems() {
+  //   this.cartItems$.forEach(item => {
+  //     this.cartItemsCount += item.count;
+  //   });
+  // }
+
+  private readFromLocal() {
+    this.cartItems$ = this.shoppingService.getCartLocal();
   }
 
-  decreaseQuantity(productKey) {
-    this.shoppingService.updateCount(productKey, -1);
-    this.readCartItems();
-    this.updateDatas();
+  private readFromDB() {
+    this.shoppingService.getCartFromDB(this.uid).then(cartItems => {
+        this.cartItems$ = cartItems;
+    });
+  }
+
+  increaseQuantity(index, productKey) {
+  //  this.cartItemsCount += 1;
+   // this.cartItems$[index].count += 1;
+    // ################# //
+    if (!this.userLoggedIn) {
+      this.shoppingService.updateCountLocal(productKey, 1);
+    } else {
+      this.shoppingService.updateCountFromDB(this.uid, productKey, 1);
+    }
+  }
+
+  decreaseQuantity(index, productKey) {
+  //  this.cartItemsCount -= 1;
+   // this.cartItems$[index].count -= 1;
+    // ################# //
+    if (!this.userLoggedIn) {
+      this.shoppingService.updateCountLocal(productKey, -1);
+    } else {
+      this.shoppingService.updateCountFromDB(this.uid, productKey, -1);
+    }
+  }
+
+  clearShoppingCart() {
+   // this.cartItemsCount = 0;
+    this.cartItems$ = [];
+    if (!this.userLoggedIn) {
+      this.shoppingService.clearCartStorage();
+    } else {
+      this.shoppingService.clearCartFromDB(this.uid);
+    }
   }
 }

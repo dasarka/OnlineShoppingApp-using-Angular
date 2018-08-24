@@ -4,6 +4,9 @@
 .card-footer{
     padding: 0px;
 }
+img{
+    height: 25rem;
+}
 .imgResize{
     height: 10rem;
 }

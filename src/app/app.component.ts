@@ -31,7 +31,7 @@ export class AppComponent {
       // ################## //
       userService.save(user);
       // ################## //
-      shoppingService.updateCart(user.uid);
+      shoppingService.updateAllCartItems(user.uid);
       // ################## //
       const returnUrl = localStorage.getItem('returnUrl');
       if (!returnUrl) {return; }

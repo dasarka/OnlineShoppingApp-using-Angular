@@ -21,6 +21,9 @@ export class DataService {
   create(path: string, body: any) {
     this.db.list(path).push(body);
   }
+  createObject(path: string, body: any) {
+    this.db.object(path).update(body);
+  }
   // ################## //
   getAll(path: string, orderby ?: string) {
     if (orderby !== undefined) {

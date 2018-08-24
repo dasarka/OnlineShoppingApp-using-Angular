@@ -11,6 +11,10 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {DataTableModule} from 'angular-6-datatable';
 // component
+// assests
+import { ProductFilterComponent } from './common-assets/product-filter/product-filter.component';
+import { ProductCardComponent } from './common-assets/product-card/product-card.component';
+import { CartChangeComponent } from './common-assets/cart-change/cart-change.component';
 // general
 import { AppComponent } from './app.component';
 import { NavbarComponent } from './components/navbar/navbar.component';
@@ -31,15 +35,12 @@ import { AuthService } from './services/auth/auth.service';
 import { CategoryService } from './services/category/category.service';
 import { ProductManagementService } from './services/product/product-management.service';
 import { DataService } from './services/data/data.service';
+import { ShoppingService } from './services/shopping/shopping.service';
 // database
 // firebase integrtion modules
 import { AngularFireModule, FirebaseAppConfigToken, FirebaseAppNameToken } from 'angularfire2';
 import {AngularFireDatabaseModule} from 'angularfire2/database';
 import {AngularFireAuthModule} from 'angularfire2/auth';
-import { ProductFilterComponent } from './common-assets/product-filter/product-filter.component';
-import { ProductCardComponent } from './common-assets/product-card/product-card.component';
-import { CartChangeComponent } from './common-assets/cart-change/cart-change.component';
-
 
 const appRoutes: Routes = [
   {
@@ -121,7 +122,7 @@ const appRoutes: Routes = [
   ],
   providers: [
     // production purpose
-    //  {provide: FirebaseAppConfigToken, useValue: environment.firebaseConfig},
+      {provide: FirebaseAppConfigToken, useValue: environment.firebaseConfig},
     //  { provide: FirebaseAppNameToken, useValue: 'oShop' },
     //  { provide: FirebaseAppConfigToken, useValue: undefined },
     AuthService,
@@ -130,7 +131,8 @@ const appRoutes: Routes = [
     UserService,
     DataService,
     ProductManagementService,
-    CategoryService
+    CategoryService,
+    ShoppingService
   ],
   bootstrap: [AppComponent]
 })

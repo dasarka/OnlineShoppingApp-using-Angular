@@ -1,3 +1,4 @@
+import { Observable } from 'rxjs/Observable';
 import { AuthService } from './../../services/auth/auth.service';
 import { ShoppingService } from './../../services/shopping/shopping.service';
 import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
@@ -28,10 +29,10 @@ export class ProductCardComponent implements OnInit {
   @Input('wishList') wishList: {};
   @Input('productKey') productKey;
   // ################## //
-  @Output('addToCart') addToCart;
-  // ################## //
-  cartItems;
+  cartItemCount$;
   categories: Category[];
+  private userLoggedIn: boolean;
+  private uid: string;
   constructor(
     private authService: AuthService,
     private categoryService: CategoryService,
@@ -40,46 +41,60 @@ export class ProductCardComponent implements OnInit {
     // ################## //
     categoryService.getAll().pipe(take(1)).subscribe(c => {
       this.categories = c;
+      this.readCart();
     });
    }
-   ngOnInit() {
-    this.readCartItems(this.productKey);
-   }
+   ngOnInit() { }
   // ################## //
-  readCartItems(productKey: string) {
-    const items = this.shoppingService.getCart(productKey);
-    this.cartItems = (items) ? items[0] : null;
-
-  }
   addFavourite(productId: string) {
     this.wishList[productId] = !this.wishList[productId];
   }
-  clickToAdd(productKey: string, product: Product) {
-    this.shoppingService.addToCart(productKey, product);
-    this.readCartItems(productKey);
+  private readCart() {
     this.authService.user.subscribe(user => {
-      if (user) {
-        this.shoppingService.updateCart(user.uid);
+      if (!user) { this.userLoggedIn = false; }
+
+      this.uid = user.uid;
+      this.userLoggedIn = true;
+
+      if (!this.userLoggedIn) {
+        // get single item from local
+        const item = this.shoppingService.getCartLocal(this.productKey);
+       // this.cartItemCount = (item === null) ? 0 : item[0]['count'];
+      } else {
+        // get single item from db
+        this.shoppingService.getItemCountFromDB(this.uid, this.productKey).then(item => {
+          this.cartItemCount$ = item;
+        });
       }
     });
   }
-  private updateDatas() {
-    this.authService.user.subscribe(user => {
-      if (!user) {return; }
-      // ################## //
-      this.shoppingService.updateCart(user.uid);
-    });
+  // ################# //
+  clickToAdd(productKey: string, product: Product) {
+    // this.cartItemCount$ += 1;
+    if (!this.userLoggedIn) {
+        this.shoppingService.addToCartLocal(productKey, product);
+      } else {
+        this.shoppingService.addToCartDB(this.uid, productKey, product);
+      }
   }
-
+  // ################# //
   increaseQuantity(productKey) {
-    this.shoppingService.updateCount(productKey, 1);
-    this.readCartItems(productKey);
-    this.updateDatas();
+    // this.cartItemCount$ += 1;
+    // ################# //
+    if (!this.userLoggedIn) {
+      this.shoppingService.updateCountLocal(productKey, 1);
+    } else {
+      this.shoppingService.updateCountFromDB(this.uid, productKey, 1);
+    }
   }
-
+  // ################# //
   decreaseQuantity(productKey) {
-    this.shoppingService.updateCount(productKey, -1);
-    this.readCartItems(productKey);
-    this.updateDatas();
+    // this.cartItemCount$ -= 1;
+    // ################# //
+    if (!this.userLoggedIn) {
+      this.shoppingService.updateCountLocal(productKey, -1);
+    } else {
+      this.shoppingService.updateCountFromDB(this.uid, productKey, -1);
+    }
   }
 }

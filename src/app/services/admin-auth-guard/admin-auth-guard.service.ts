@@ -1,6 +1,6 @@
-import { UserRole} from './../../models/user-roles';
+import { UserRole} from '../../models/user-roles';
 import { Observable } from 'rxjs/Observable';
-import { AuthService } from './../auth/auth.service';
+import { AuthService } from '../auth/auth.service';
 import { CanActivate, RouterStateSnapshot } from '@angular/router';
 import { Injectable } from '@angular/core';
 

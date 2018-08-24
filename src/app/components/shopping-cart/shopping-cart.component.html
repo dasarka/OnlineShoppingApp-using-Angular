@@ -1,9 +1,15 @@
 <h2>
   Shopping Cart
 </h2>
-<p>
-  You have {{cartItemsCount}} items in your shopping cart
-</p>
+<!-- <p >
+  <span *ngIf="cartItemsCount == 0">
+    Ypur sopping cart is empty!!!
+  </span>
+  <span *ngIf="cartItemsCount > 0">
+      You have {{cartItemsCount}} items in your shopping cart!!!
+    </span>
+  
+</p> -->
 <table class="table">
   <thead>
     <tr>
@@ -14,19 +20,19 @@
     </tr>
   </thead>
   <tbody>
-    <tr *ngFor="let items of cartItems">
-        <td>
+    <tr *ngFor="let items of cartItems$ | async; let i = index">
+        <td *ngIf="items.count > 0">
           <img [src]="items.imgUrl" class="rounded-circle">
         </td>
-        <td>{{items.title}}</td>
-        <td>
+        <td *ngIf="items.count > 0">{{items.title}}</td>
+        <td *ngIf="items.count > 0">
           <span class="fa fa-minus-square"
-          (click)="decreaseQuantity(items.key)"></span>
+          (click)="decreaseQuantity(i,items.key)"></span>
           <span class="form-control-sm">{{items.count}}</span>
           <span class="fa fa-plus-square"
-            (click)="increaseQuantity(items.key)"></span>
+            (click)="increaseQuantity(i,items.key)"></span>
         </td>
-        <td>{{items.price * items.count | currency:'INR':'symbol'}}</td>
+        <td *ngIf="items.count > 0">{{items.price * items.count | currency:'INR':'symbol'}}</td>
     </tr>
   </tbody>
   <tfoot>
@@ -34,10 +40,13 @@
       <td></td>
       <td></td>
       <td></td>
-      <td>1234</td>
+      <td>
+        <span *ngIf="cartItemsCount > 0">{{totalPrice | currency:'INR':'symbol'}}</span>
+      </td>
     </tr>
   </tfoot>
 
 </table>
-<button class="btn btn-sm btn-danger">Clear Shopping Cart</button>
+<button class="btn btn-sm btn-danger"
+(click)="clearShoppingCart()">Clear Shopping Cart</button>
 

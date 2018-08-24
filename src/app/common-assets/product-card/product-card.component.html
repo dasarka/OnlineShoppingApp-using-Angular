@@ -25,7 +25,7 @@
   </div>
   <div class="card-footer" *ngIf="addCart">
     <div
-      *ngIf="!cartItems; then btnAddCart else btnUpdateCart"
+      *ngIf="(cartItemCount$ !== null) ; then btnUpdateCart else btnAddCart"
       ></div>
       <ng-template #btnAddCart>
         <button  class="btn btn-light btn-block text-center"
@@ -35,7 +35,7 @@
           <div class="form-control text-center">
               <span class="fa fa-minus-square"
               (click)="decreaseQuantity(productKey)"></span>
-              <span class="form-control-sm">{{cartItems.count}} in Cart</span>
+              <span class="form-control-sm">{{cartItemCount$ | async}} in Cart</span>
               <span class="fa fa-plus-square"
                 (click)="increaseQuantity(productKey)"></span>
           </div>
