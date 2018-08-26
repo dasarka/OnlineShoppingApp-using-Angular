@@ -1,5 +1,5 @@
 import { ShoppingService } from './services/shopping/shopping.service';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 // Services
 import { UserService } from './services/user/user.service';
@@ -30,6 +30,7 @@ export class AppComponent {
       if (!user) {return; }
       // ################## //
       userService.save(user);
+      localStorage.setItem('userId', user.uid);
       // ################## //
       shoppingService.updateAllCartItems(user.uid);
       // ################## //
@@ -37,6 +38,7 @@ export class AppComponent {
       if (!returnUrl) {return; }
       localStorage.removeItem('returnUrl');
       router.navigateByUrl(returnUrl);
+      router.onSameUrlNavigation = 'reload';
     });
   }
 }

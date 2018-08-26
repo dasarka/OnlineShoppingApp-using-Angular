@@ -32,8 +32,8 @@
     <li class="nav-item">
       <a class="nav-link" routerLink="/cart">
         <span class="fa fa-shopping-basket"></span>
-        <span class="cart-item rounded-circle bg-warning">
-            {{cartItemsCount}}
+        <span *ngIf="cart$ | async as cart" class="cart-item badge badge-warning badge-pill">
+            {{cart.totalCount}}
         </span>
       </a>
     </li>

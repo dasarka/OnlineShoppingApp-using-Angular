@@ -1,181 +1,142 @@
-import { async } from '@angular/core/testing';
-import { CartItem } from './../../models/cart-item';
-import { take, switchMap } from 'rxjs/operators';
+import { Injectable} from '@angular/core';
+// Services
+import { DataService } from '../data/data.service';
+// Models
+import { CartItem } from '../../models/cart-item';
+import { Product } from '../../models/product';
+import { ShoppingCart } from '../../models/shopping-cart';
+// Operators
 import { Observable } from 'rxjs/Observable';
-import { Product } from './../../models/product';
-import { AuthService } from './../auth/auth.service';
-import { DataService } from './../data/data.service';
-import { Injectable } from '@angular/core';
+import { take, switchMap, map } from 'rxjs/operators';
+import 'rxjs/add/observable/of';
+
+/*
+**Developed By: Arka Das
+**Last Modified On: 26-08-2018
+*/
 
 @Injectable({
   providedIn: 'root'
 })
 export class ShoppingService {
-
   constructor(
-    private authService: AuthService,
     private dataService: DataService
   ) { }
 
+  // ********************************************************************************************** //
+  // General methods
+  // ********************************************************************************************** //
+  private structureItemArr(items: any[], defaultValue) {
+    const formattedItems = defaultValue;
+    if (items) {
+      items.forEach(item => {
+        formattedItems[item.key] = {quantity: (parseInt(item.quantity, 0) || 1),
+          title: item.title,
+          price: parseInt(item.price, 0),
+          imgUrl: item.imgUrl};
+      });
+    }
+    return formattedItems;
+  }
+  // ********************************************************************************************** //
+  private structureItem(item) {
+    return { key: item.key,
+      quantity: (parseInt(item.quantity, 0) || 1),
+      title: item.title,
+      price: parseInt(item.price, 0),
+      imgUrl: item.imgUrl
+    };
+  }
+  // ********************************************************************************************** //
+  // ********************************************************************************************** //
+  // All localstorage private method
+  // ********************************************************************************************** //
   // storeCart for anonymousUser in localstorage
-  private storeCart(productKey: string, product: Product) {
-    let cartItems = localStorage.getItem('cart-item');
-    const itemsCount = localStorage.getItem('cart-item-count');
-    localStorage.setItem('cart-item-count', (
-      (itemsCount) ? (parseInt(itemsCount, 0) + 1).toString() : '1'));
-    const cartItem = '-oShopCartItem-' + productKey +
-      '-oShopCart-' +
-      '1' +
-      '-oShopCart-' +
-      product.title +
-      '-oShopCart-' +
-      product.price +
-      '-oShopCart-' +
-      product.imgUrl;
-    if (!cartItems) {
-      localStorage.setItem('cart-item', cartItem);
-    } else {
-      if (cartItems.includes(productKey)) {
-        const itemCountStr = cartItems.split(productKey)[1].split('-oShopCart-')[1];
-        let itemCount: number = parseInt(itemCountStr, 0);
-        cartItems = cartItems.replace((productKey + '-oShopCart-' + itemCountStr),
-        (productKey + '-oShopCart-' + (++itemCount)));
-        localStorage.setItem('cart-item', cartItems);
-      } else {
-        cartItems += cartItem;
-        localStorage.setItem('cart-item', cartItems);
+  // Function call time:- if anonymousUser clicked on add to cart button
+  // ********************************************************************************************** //
+  private async storeCart(itemId: string, item: Product) {
+    let cartItems: CartItem[];
+    cartItems = (await this.getLocalCart()).cartItems;
+    const cartItem = JSON.stringify( this.structureItem(item));
+    cartItems = (cartItems) ? cartItems : [];
+    cartItems.push(JSON.parse(cartItem));
+    this.updateLocalStorage('cart-item', JSON.stringify(cartItems));
+  }
+  // ********************************************************************************************** //
+  // get cart items
+  // Function call time:- on page load for anonymousUser - shopping cart component
+  // ********************************************************************************************** //
+  private async getLocalCart(): Promise<ShoppingCart> {
+    return new ShoppingCart(JSON.parse(localStorage.getItem('cart-item') || '[]'));
+  }
+  // ********************************************************************************************** //
+  // get item count
+  // Function call time:- on page load for anonymousUser- product card component
+   // ********************************************************************************************** //
+  private async fetchItemCountFromLocal(productKey: string) {
+    const cartItems = (await this.getLocalCart()).cartItems;
+    for (const item in cartItems) {
+      if (cartItems.hasOwnProperty(item)) {
+        if (cartItems[item]['key'] === productKey) {
+          return Observable.of(cartItems[item]['quantity']) ;
+        }
+      }
+    }
+    return Observable.of(null);
+  }
+  // ********************************************************************************************** //
+  private updateLocalStorage(key, value) {
+    localStorage.setItem(key, value);
+  }
+  // ********************************************************************************************** //
+  // update count
+  // Function call time: if anonymousUser clicked on either plus or minus button
+  // ********************************************************************************************** //
+  private async modifyCount(productKey: string, count: number) {
+    const cartItems = (await this.getLocalCart()).cartItems;
+    for (const item in cartItems) {
+      if (cartItems.hasOwnProperty(item)) {
+        if (cartItems[item]['key'] === productKey) {
+          cartItems[item]['quantity'] += count;
+          if (cartItems[item]['quantity'] < 1) {
+            cartItems.splice(parseInt(item, 0), 1);
+          }
+
+          this.updateLocalStorage('cart-item', JSON.stringify(cartItems));
+          return;
+        }
       }
     }
   }
-
-  // retrieve from localstorage once logged in
-  private retriveCompleteCart(dbCartItems) {
-    const cartItems = localStorage.getItem('cart-item');
-    const products =  {};
-    if (dbCartItems) {
-      dbCartItems.forEach(element => {
-        products[element.key] = {count: parseInt(element.count, 0),
-          title: element.title,
-          price: parseInt(element.price, 0),
-          imgUrl: element.imgUrl};
-      });
-    }
-    if (cartItems) {
-      const cartItem = cartItems.split('-oShopCartItem-');
-      cartItem.forEach(element => {
-        const item = element.split('-oShopCart-');
-        if (item[0] !== '' ||
-         item[1] !== undefined ||
-          item[2] !== undefined ||
-          item[3] !== undefined ||
-           item[4] !== undefined) {
-             // ################## //
-            if (products[item[0]] === undefined) {
-                products[item[0]] = {count: parseInt(item[1], 0),
-                  title: item[2],
-                  price: parseInt(item[3], 0),
-                  imgUrl: item[4]};
-            } else {
-              products[item[0]].count ++;
-            }
-        }
-      });
-    }
-    return products;
-  }
-
-  // update cart in anonymousUser
-  private updateCart(uid: string, dbCartItems) {
-    const cartItems = this.retriveCompleteCart(dbCartItems);
-    if (cartItems !== null) {
-       this.dataService.update('/shopping-cart' , uid, cartItems);
-      this.clearCartStorage();
-    }
-  }
-
-  // Localstorage
-  // ####################### //
-  addToCartLocal(productKey: string, product: Product) {
-    this.storeCart(productKey, product);
-  }
-
-
-  getCartLocal(productKey ?: string): CartItem[] {
-    let products: CartItem[];
-    products = [];
-    const cartItems = localStorage.getItem('cart-item');
-     if (cartItems) {
-       if (productKey === undefined) {
-        const cartItem = cartItems.split('-oShopCartItem-');
-         cartItem.forEach(element => {
-           const item = element.split('-oShopCart-');
-           if (item[0] !== '' ||
-           item[1] !== undefined ||
-             item[2] !== undefined ||
-             item[3] !== undefined ||
-             item[4] !== undefined) {
-               // ################## //
-             products.push({ key : item[0],
-               count: parseInt(item[1], 0),
-               title: item[2],
-               price: parseInt(item[3], 0),
-               imgUrl: item[4]});
-            }
-         });
-       } else {
-         if (!cartItems.includes(productKey)) {
-           return null;
-         }
-
-         let cartItem = cartItems.split('-oShopCartItem-' + productKey)[1];
-         cartItem = cartItem.split('-oShopCartItem-')[0];
-         const item = cartItem.split('-oShopCart-');
-          return  [{ key : item[0],
-            count: parseInt(item[1], 0),
-            title: item[2],
-            price: parseInt(item[3], 0),
-            imgUrl: item[4]}];
-       }
-     }
-    return products;
-  }
-
-  updateCountLocal(productKey: string, count: number) {
-     let cartItems = localStorage.getItem('cart-item');
-     const itemsCount = localStorage.getItem('cart-item-count');
-     localStorage.setItem('cart-item-count', (
-       (itemsCount) ? (parseInt(itemsCount, 0) + count).toString() : '1'));
-       if (cartItems.includes(productKey)) {
-         const itemCountStr = cartItems.split(productKey)[1].split('-oShopCart-')[1];
-        const itemCount: number = parseInt(itemCountStr, 0) + count;
-        if (itemCount > 0) {
-           cartItems = cartItems.replace((productKey + '-oShopCart-' + itemCountStr),
-           (productKey + '-oShopCart-' + (itemCount)));
-         } else {
-          const itemsArr = cartItems.split('-oShopCartItem-' + productKey);
-           const firstIndex  = itemsArr[1].indexOf('-oShopCartItem-', 1);
-           itemsArr[1] = itemsArr[1].substr(firstIndex,  (itemsArr[1].length - firstIndex));
-           cartItems = itemsArr[0] + itemsArr[1];
-         }
-         localStorage.setItem('cart-item', cartItems);
-       }
-  }
-
-   // clear local storage once loggeg in
-  clearCartStorage() {
+  // ********************************************************************************************** //
+  // clear local storage
+  // ********************************************************************************************** //
+  private clearCartStorage() {
     localStorage.removeItem('cart-item');
     localStorage.removeItem('cart-item-count');
   }
-  // ####################### //
+  // ********************************************************************************************** //
+  // ********************************************************************************************** //
+  // All Firebase private methods
+  // ********************************************************************************************** //
+  // Get cart items from firebase
+  // ********************************************************************************************** //
+  private getCartItemFromFirebase(uid: String): Observable<CartItem[]> {
+    return this.dataService.getAll('/shopping-cart/' + uid).pipe(
+      switchMap(items => {
+        if (items) {
+          return Observable.of(items);
+        }
 
-
-  // Firebase
-  // ####################### //
-  async getCartFromDB(uid: string): Promise<Observable<CartItem[]>> {
-    return this.dataService.getAll('/shopping-cart/' + uid);
+        return Observable.of(null);
+      })
+    );
   }
-  async getItemCountFromDB(uid: string, productKey: string): Promise<Observable<CartItem>>  {
-    return  this.dataService.get('/shopping-cart/' + uid + '/' + productKey + '/count')
+  // ********************************************************************************************** //
+  // Fetch Item count from firebase
+  // ********************************************************************************************** //
+  private async fetchItemCountFromDB(uid: string, productKey: string) {
+    return  this.dataService.get('/shopping-cart/' + uid + '/' + productKey + '/quantity')
     .pipe(
       switchMap(itemCount => {
         if (itemCount) {
@@ -186,37 +147,118 @@ export class ShoppingService {
       })
     );
   }
-  addToCartDB ( uid: string, productKey: string, product: Product) {
-    this.dataService.createObject('/shopping-cart/' + uid + '/' + productKey, {
-      count : 1,
-      title : product.title,
-      price: product.price,
-      imgUrl: product.imgUrl
-    });
-  }
-  updateCountFromDB(uid: string, productKey: string, count: number) {
-    this.dataService.get('/shopping-cart/' + uid + '/' + productKey).pipe(take(1))
-    .subscribe(item => {
-      item['count'] += count;
-      if (item['count'] > 0) {
-        this.dataService.update('/shopping-cart/' + uid , productKey,   item);
-      } else {
-        this.dataService.remove('/shopping-cart/' + uid , productKey);
+  // ********************************************************************************************** //
+  // ********************************************************************************************** //
+  // All Public methods
+  // ********************************************************************************************** //
+  // ********************************************************************************************** //
+  // Add Cart - Product Cart Component
+  // ********************************************************************************************** //
+  async addToCart(productKey: string, product: Product) {
+    const uid = localStorage.getItem('userId');
+      if (!uid) {
+        return this.storeCart(productKey, product);
       }
-    });
-  }
 
-  clearCartFromDB(uid: string) {
+      this.dataService.createObject('/shopping-cart/' + uid + '/' + productKey, {
+        quantity : 1,
+        title : product.title,
+        price: product.price,
+        imgUrl: product.imgUrl
+      });
+  }
+  // ********************************************************************************************** //
+  // Fetch all cart items
+  // ********************************************************************************************** //
+  async getCartItems(): Promise<Observable<ShoppingCart>> {
+    const uid = localStorage.getItem('userId');
+      if (!uid) {
+        const cartItems = await this.getLocalCart();
+        if (cartItems) {
+          return Observable.of(cartItems);
+        }
+        return Observable.of(null);
+      }
+
+    return this.getCartItemFromFirebase(uid).pipe(
+      map(items => {
+        return new ShoppingCart(items);
+      })
+    );
+  }
+  // ********************************************************************************************** //
+  // Get Item Count - Product Card Compoenet
+  // ********************************************************************************************** //
+  async getItemCount(productKey: string) {
+    const uid = localStorage.getItem('userId');
+      if (!uid) {
+        return await this.fetchItemCountFromLocal(productKey);
+      }
+
+    return await this.fetchItemCountFromDB(uid, productKey);
+  }
+  // ********************************************************************************************** //
+  // Update Item Count - Product Card & Shopping Componenet
+  // ********************************************************************************************** //
+  async updateCount(productKey: string, count: number) {
+    const uid = localStorage.getItem('userId');
+      if (!uid) {
+        return this.modifyCount(productKey, count);
+      }
+
+        this.dataService.get('/shopping-cart/' + uid + '/' + productKey).pipe(take(1))
+      .subscribe(item => {
+        item['quantity'] += count;
+        if (item['quantity'] > 0) {
+          this.dataService.update('/shopping-cart/' + uid , productKey,   item);
+        } else {
+          this.dataService.remove('/shopping-cart/' + uid , productKey);
+        }
+      });
+  }
+  // ********************************************************************************************** //
+  // Clear Shopping Cart
+  // ********************************************************************************************** //
+  async clearCart() {
+    const uid = localStorage.getItem('userId');
+      if (!uid) {
+        return this.clearCartStorage();
+      }
+
     this.dataService.remove('/shopping-cart/' , uid);
   }
-  // ####################### //
-
+  // ********************************************************************************************** //
+  // ********************************************************************************************** //
+  // ********************************************************************************************** //
   // update database and localstorage once user looged in
-  updateAllCartItems(uid: string) {
+  // ********************************************************************************************** //
+  // ********************************************************************************************** //
+  // retrieve from localstorage
+  // Function call time:- once user logged
+  // ********************************************************************************************** //
+  private async retriveCompleteCart(dbCartItems) {
+    const cartItems = (await this.getLocalCart()).cartItems;
+    let newCartItems =  this.structureItemArr(dbCartItems, {});
+    if (cartItems) {
+      newCartItems =  this.structureItemArr(cartItems, newCartItems);
+    }
+    return newCartItems;
+  }
+  // update cart in anonymousUser
+  // ********************************************************************************************** //
+  private async updateCart(uid: string, dbCartItems) {
+    const cartItems = await this.retriveCompleteCart(dbCartItems);
+    this.clearCartStorage();
+    if (cartItems !== null) {
+       await this.dataService.update('/shopping-cart' , uid, cartItems);
+    }
+  }
+  // ********************************************************************************************** //
+  async updateAllCartItems(uid: string) {
     // first get all from db
     this.dataService.getAll('/shopping-cart/' + uid).pipe(take(1)).subscribe(cartItems => {
       this.updateCart(uid, cartItems);
     });
   }
-
+  // ********************************************************************************************** //
 }

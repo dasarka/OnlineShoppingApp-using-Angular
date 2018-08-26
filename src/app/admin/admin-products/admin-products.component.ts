@@ -1,6 +1,6 @@
 import { Component} from '@angular/core';
 // Services
-import { CategoryService } from './../../services/category/category.service';
+import { CategoryService } from '../../services/category/category.service';
 import { ProductManagementService } from '../../services/product/product-management.service';
 // Models
 import { Product } from '../../models/product';

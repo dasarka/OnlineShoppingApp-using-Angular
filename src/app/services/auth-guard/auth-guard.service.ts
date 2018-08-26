@@ -1,8 +1,15 @@
+// ********************************************************************************************** //
+// Guard Service
+// ********************************************************************************************** //
+import { Injectable } from '@angular/core';
 import { Router, RouterStateSnapshot, CanActivate } from '@angular/router';
 import { AuthService } from '../auth/auth.service';
-import { Injectable } from '@angular/core';
-
 import {map} from 'rxjs/operators';
+
+/*
+**Developed By: Arka Das
+**Last Modified On: 26-08-2018
+*/
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +20,7 @@ export class AuthGuard implements CanActivate {
     private authService: AuthService,
     private router: Router
   ) { }
-
+  // ********************************************************************************************** //
   canActivate(route, state: RouterStateSnapshot) {
     return this.authService.appUser$
     .pipe(

@@ -1,0 +1,34 @@
+<div class="card">
+  <div class="card-body"
+  *ngIf="order$ | async as order">
+    <div class="cardTitle">
+      <h3>#Order No: {{orderId}}</h3>
+    </div>
+    <br/>
+    <hr/>
+    <br/>
+    <div class="card-title">
+      <h4>Order Details</h4>
+    </div>
+    <div class="card-text">
+      <app-order-card
+        [cartItems]="order.items"
+      ></app-order-card>
+    </div>
+    <br/>
+    <hr/>
+    <br/>
+    <div class="card-title">
+      <h4>Shipping Address</h4>
+    </div>
+    <div class="card-text">
+        <table class="table table-borderless">
+            <tbody>
+              <tr>{{order.shippingDetails.name}}</tr>
+              <tr>{{order.shippingDetails.address}}</tr>
+              <tr>{{order.shippingDetails.city}}</tr>
+            </tbody>
+          </table>
+    </div>
+  </div>
+</div>

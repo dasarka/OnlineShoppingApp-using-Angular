@@ -24,21 +24,18 @@
     </div>
   </div>
   <div class="card-footer" *ngIf="addCart">
-    <div
-      *ngIf="(cartItemCount$ !== null) ; then btnUpdateCart else btnAddCart"
-      ></div>
+      <div class="form-control text-center"
+        *ngIf="(cartItemCount$ | async); let itemCount; else btnAddCart">
+        <app-product-quantity
+          [productKey]="productKey"
+          [quantity]="itemCount"
+          [suffix] = "qSuffix"
+          (change)="updateQuantity()"
+          ></app-product-quantity>
+      </div>
       <ng-template #btnAddCart>
         <button  class="btn btn-light btn-block text-center"
         (click)="clickToAdd(productKey,product)">Add to Cart</button>
-      </ng-template>
-      <ng-template #btnUpdateCart>
-          <div class="form-control text-center">
-              <span class="fa fa-minus-square"
-              (click)="decreaseQuantity(productKey)"></span>
-              <span class="form-control-sm">{{cartItemCount$ | async}} in Cart</span>
-              <span class="fa fa-plus-square"
-                (click)="increaseQuantity(productKey)"></span>
-          </div>
       </ng-template>
   </div>
 </div>

@@ -1,0 +1,20 @@
+<table class="table">
+    <tbody>
+      <tr *ngFor="let item of cart.cartItems">
+        <td>
+          {{item.quantity}} x {{item.title}}
+        </td>
+        <td>
+          {{item.price * item.quantity | currency:'INR':'symbol'}}
+        </td>
+      </tr>
+    </tbody>
+    <tfoot class="font-weight-bold">
+      <td>
+        <h6>Total</h6>
+      </td>
+      <td>
+        {{cart.totalPrice | currency:'INR':'symbol'}}
+      </td>
+    </tfoot>
+  </table>

@@ -1,3 +1,20 @@
-<p>
-  orders works!
-</p>
+<table class="table table-striped"
+  *ngIf="orders$ | async as orders">
+  <thead>
+    <tr>
+      <th>Order No</th>
+      <th>Date</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr
+      *ngFor="let order of orders.orderDetails">
+      <td>{{order.key}}</td>
+      <td>{{order.dateOfCreation | date:'MMM d, y'}}</td>
+      <td>
+        <a [routerLink]="['/my/orders/',order.key]">View</a>
+      </td>
+    </tr>
+  </tbody>
+</table>

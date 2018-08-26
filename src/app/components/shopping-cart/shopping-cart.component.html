@@ -1,52 +1,62 @@
-<h2>
-  Shopping Cart
-</h2>
-<!-- <p >
-  <span *ngIf="cartItemsCount == 0">
-    Ypur sopping cart is empty!!!
-  </span>
-  <span *ngIf="cartItemsCount > 0">
-      You have {{cartItemsCount}} items in your shopping cart!!!
+<div *ngIf="cart$ | async as cart">
+  <h2>
+    Shopping Cart
+  </h2>
+  <p>
+    <span *ngIf="cart.totalCount == 0 ; else showTotalCount">
+      Your sopping cart is empty!!!
     </span>
+    <ng-template #showTotalCount>
+        You have {{cart.totalCount}} items in your shopping cart!!!
+        <button class="btn btn-sm btn-light pull-right"
+          *ngIf="cart.cartItems.length"
+          (click)="clearShoppingCart()">
+            Clear Shopping Cart
+        </button>
+    </ng-template>
+  </p>
+  <table class="table text-center table-striped" *ngIf="cart.cartItems.length > 0">
+    <thead>
+      <tr>
+        <td colspan="2">Products</td>
+        <td>Quantity</td>
+        <td>Price</td>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of cart.cartItems">
+          <td class="text-left">
+            <img [src]="item.imgUrl" class="rounded-circle">
+          </td>
+          <td class="text-left">{{item.title}}</td>
+          <td>
+              <app-product-quantity
+              [productKey]="item.key"
+              [quantity]="item.quantity"
+              (change)="updateQuantity()"
+              ></app-product-quantity>
+          </td>
+          <td>
+            {{item.price * item.quantity| currency:'INR':'symbol'}}
+          </td>
+      </tr>
+    </tbody>
+    <tfoot>
+      <tr>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td>
+          <span>{{cart.totalPrice | currency:'INR':'symbol'}}</span>
+        </td>
+      </tr>
+    </tfoot>
+
+  </table>
   
-</p> -->
-<table class="table">
-  <thead>
-    <tr>
-      <td></td>
-      <td>Product</td>
-      <td>Quantity</td>
-      <td>Price</td>
-    </tr>
-  </thead>
-  <tbody>
-    <tr *ngFor="let items of cartItems$ | async; let i = index">
-        <td *ngIf="items.count > 0">
-          <img [src]="items.imgUrl" class="rounded-circle">
-        </td>
-        <td *ngIf="items.count > 0">{{items.title}}</td>
-        <td *ngIf="items.count > 0">
-          <span class="fa fa-minus-square"
-          (click)="decreaseQuantity(i,items.key)"></span>
-          <span class="form-control-sm">{{items.count}}</span>
-          <span class="fa fa-plus-square"
-            (click)="increaseQuantity(i,items.key)"></span>
-        </td>
-        <td *ngIf="items.count > 0">{{items.price * items.count | currency:'INR':'symbol'}}</td>
-    </tr>
-  </tbody>
-  <tfoot>
-    <tr>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td>
-        <span *ngIf="cartItemsCount > 0">{{totalPrice | currency:'INR':'symbol'}}</span>
-      </td>
-    </tr>
-  </tfoot>
-
-</table>
-<button class="btn btn-sm btn-danger"
-(click)="clearShoppingCart()">Clear Shopping Cart</button>
-
+  <a class="btn btn-sm btn-primary pull-right"
+    routerLink="../check-out"
+    *ngIf="cart.cartItems.length">
+    Check Out
+  </a>
+</div>

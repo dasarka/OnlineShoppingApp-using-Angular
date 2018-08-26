@@ -1,3 +1,86 @@
-<p>
-  check-out works!
-</p>
+<h4>Shipping</h4>
+<div class="row">
+  <div class="col-6">
+    <div class="card">
+      <div class="card-body">
+          <form [formGroup]="checkOutForm"  (ngSubmit)="placeOrder()">
+              <div class="form-group">
+                  <label for="name">
+                    Name<span class="red">*</span>
+                  </label>
+                  <input 
+                      formControlName="name"
+                      id="name" 
+                      type="text" 
+                      placeholder="Enter Your name"
+                      class="form-control">
+                  <div class="alert alert-danger"
+                      *ngIf="name.touched && name.invalid">
+                        Provide your name
+                    </div>
+              </div>
+              <div class="form-group">
+                  <label for="address">
+                    Address<span class="red">*</span>
+                  </label>
+                  <textarea 
+                      formControlName="address"
+                      id="address" 
+                      type="text" 
+                      placeholder="Enter your address in details"
+                      class="form-control"></textarea>
+                  <div class="alert alert-danger"
+                      *ngIf="address.touched && address.invalid">
+                        Provide your shipping address
+                    </div>
+              </div>
+              <div class="form-group">
+                  <label for="city">
+                    City<span class="red">*</span>
+                  </label>
+                  <input 
+                      formControlName="city"
+                      id="city" 
+                      type="text" 
+                      placeholder="Enter your city"
+                      class="form-control">  
+                  <div class="alert alert-danger"
+                      *ngIf="city.touched && city.invalid">
+                        Provide your city
+                    </div>
+              </div>
+              <!-- <div 
+                *ngIf="checkOutForm.touched && checkOutForm.errors.emptyCart"
+                class="alert alert-danger">
+                 You have no item in your cart.
+              </div> -->
+              <button 
+                [disabled]="checkOutForm.invalid" 
+                class="btn btn-sm btn-success">
+                  Place Order
+              </button>
+            </form>
+        </div>
+    </div>
+  </div>
+  <div class="col-6">
+      <div class="card">
+        <div class="card-body"
+         *ngIf="cart$ | async as cart">
+         <div class="card-title">
+            <h4>Order Summary</h4>
+        </div>
+        <div class="card-text"
+          *ngIf="cart.totalCount > 0; else emptySummary">
+          <p>You have {{cart.totalCount}} items in your shopping cart</p>
+          <app-order-card
+          [cartItems]="cart.cartItems"
+          ></app-order-card>
+        </div>
+            <ng-template #emptySummary>
+              you have no items in your cart
+            </ng-template>
+        </div>
+      </div>
+    </div>
+</div>

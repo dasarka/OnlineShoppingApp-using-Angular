@@ -1,15 +1,22 @@
-import { UserRole } from '../../models/user-roles';
-import { UserService } from '../user/user.service';
-
 import { Injectable } from '@angular/core';
-import * as firebase from 'firebase';
-import { AngularFireAuth } from 'angularfire2/auth';
-import { Observable } from 'rxjs/Observable';
 import { ActivatedRoute } from '@angular/router';
-
+// Services
+import { UserService } from '../user/user.service';
+// Models
+import { UserRole } from '../../models/user-roles';
 import { AppUser } from '../../models/app-users';
+// Database
+import { AngularFireAuth } from 'angularfire2/auth';
+import * as firebase from 'firebase';
+// Operators
+import { Observable } from 'rxjs/Observable';
 import {switchMap} from 'rxjs/operators';
 import 'rxjs/add/Observable/of';
+
+/*
+**Developed By: Arka Das
+**Last Modified On: 26-08-2018
+*/
 
 @Injectable({
   providedIn: 'root'
@@ -23,7 +30,9 @@ export class AuthService {
   ) {
      this.user$ = afAuth.authState;
    }
-
+   // ********************************************************************************************** //
+   // Login
+   // ********************************************************************************************** //
   login() {
     const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl');
     if (returnUrl !== null) {
@@ -34,11 +43,14 @@ export class AuthService {
 
     this.afAuth.auth.signInWithRedirect(new firebase.auth.GoogleAuthProvider);
   }
-
+  // ********************************************************************************************** //
+  // Logout
+  // ********************************************************************************************** //
   logout() {
+    localStorage.removeItem('userId');
     this.afAuth.auth.signOut();
   }
-
+  // ********************************************************************************************** //
   get appUser$(): Observable<AppUser> {
     return this.user$
     .pipe(
@@ -51,7 +63,7 @@ export class AuthService {
       })
     );
   }
-
+  // ********************************************************************************************** //
   get userRole$(): Observable<UserRole> {
     return this.user$
     .pipe(
@@ -64,7 +76,7 @@ export class AuthService {
       })
     );
   }
-
+  // ********************************************************************************************** //
   get user() {
     return this.user$;
   }

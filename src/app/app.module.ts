@@ -14,7 +14,6 @@ import {DataTableModule} from 'angular-6-datatable';
 // assests
 import { ProductFilterComponent } from './common-assets/product-filter/product-filter.component';
 import { ProductCardComponent } from './common-assets/product-card/product-card.component';
-import { CartChangeComponent } from './common-assets/cart-change/cart-change.component';
 // general
 import { AppComponent } from './app.component';
 import { NavbarComponent } from './components/navbar/navbar.component';
@@ -38,9 +37,13 @@ import { DataService } from './services/data/data.service';
 import { ShoppingService } from './services/shopping/shopping.service';
 // database
 // firebase integrtion modules
-import { AngularFireModule, FirebaseAppConfigToken, FirebaseAppNameToken } from 'angularfire2';
+import { AngularFireModule, FirebaseAppConfigToken, FirebaseAppNameToken, FirebaseOptionsToken } from 'angularfire2';
 import {AngularFireDatabaseModule} from 'angularfire2/database';
 import {AngularFireAuthModule} from 'angularfire2/auth';
+import { ProductQuantityComponent } from './common-assets/product-quantity/product-quantity.component';
+import { OrderService } from './services/order/order.service';
+import { OrderDetailsComponent } from './components/order-details/order-details.component';
+import { OrderCardComponent } from './common-assets/order-card/order-card.component';
 
 const appRoutes: Routes = [
   {
@@ -59,6 +62,11 @@ const appRoutes: Routes = [
   {
     path: 'check-out',
     component: CheckOutComponent,
+    canActivate : [AuthGuard]
+  },
+  {
+    path: 'my/orders/:orderId',
+    component: OrderDetailsComponent,
     canActivate : [AuthGuard]
   },
   {
@@ -102,15 +110,17 @@ const appRoutes: Routes = [
     ProductFormComponent,
     ProductFilterComponent,
     ProductCardComponent,
-    CartChangeComponent
+    ProductQuantityComponent,
+    OrderDetailsComponent,
+    OrderCardComponent
   ],
   imports: [
     BrowserModule,
     // firebase modules
     // production purpose
-     // AngularFireModule,
+      AngularFireModule,
     // dev purpose
-     AngularFireModule.initializeApp(environment.firebaseConfig, 'oshop'),
+     // AngularFireModule.initializeApp(FirebaseAppConfigToken, 'oshop'),
     AngularFireDatabaseModule,
     AngularFireAuthModule,
     // bootstrap js module for angular
@@ -122,8 +132,8 @@ const appRoutes: Routes = [
   ],
   providers: [
     // production purpose
-      {provide: FirebaseAppConfigToken, useValue: environment.firebaseConfig},
-    //  { provide: FirebaseAppNameToken, useValue: 'oShop' },
+      {provide: FirebaseOptionsToken, useValue: environment.firebaseConfig},
+     // { provide: FirebaseAppNameToken, useValue: 'oShop' },
     //  { provide: FirebaseAppConfigToken, useValue: undefined },
     AuthService,
     AuthGuard,
@@ -132,7 +142,8 @@ const appRoutes: Routes = [
     DataService,
     ProductManagementService,
     CategoryService,
-    ShoppingService
+    ShoppingService,
+    OrderService
   ],
   bootstrap: [AppComponent]
 })

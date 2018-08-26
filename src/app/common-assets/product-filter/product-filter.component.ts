@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 // Services
-import { CategoryService } from './../../services/category/category.service';
+import { CategoryService } from '../../services/category/category.service';
 // Models
 import { Category } from '../../models/category';
 // Observables

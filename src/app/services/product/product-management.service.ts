@@ -9,25 +9,30 @@ import { switchMap } from 'rxjs/operators';
 
 /*
 **Developed By: Arka Das
-**Last Modified On: 22-08-2018
+**Last Modified On: 26-08-2018
 */
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProductManagementService {
-  // ################## //
   private product: Product;
   constructor(private dataService: DataService) {}
-  // ################## //
+  // ********************************************************************************************** //
+  // Create Product in firebase
+  // ********************************************************************************************** //
   createProduct(body: Product) {
     this.dataService.create('/products', body);
   }
-  // ################## //
+  // ********************************************************************************************** //
+  // get all product from firebase
+  // ********************************************************************************************** //
   getAll(): Observable<Product[]> {
     return this.dataService.getAll('/products');
   }
-  // ################## //
+  // ********************************************************************************************** //
+  // get single product from firebase
+  // ********************************************************************************************** //
   get(id: string): Observable<Product> {
     return this.dataService.get('/products/' + id)
     .pipe(
@@ -40,11 +45,15 @@ export class ProductManagementService {
       })
     );
   }
-  // ################## //
+  // ********************************************************************************************** //
+  // update product in firebase
+  // ********************************************************************************************** //
   updateProduct(id: string, body: Product) {
     this.dataService.update('/products' , id, body);
   }
-  // ################## //
+  // ********************************************************************************************** //
+  // remove product from firebase
+  // ********************************************************************************************** //
   removeProduct(id: string) {
     this.dataService.remove('/products' , id);
   }

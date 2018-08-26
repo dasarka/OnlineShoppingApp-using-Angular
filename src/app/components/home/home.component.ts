@@ -1,3 +1,4 @@
+import { Category } from '../../models/category';
 import { ActivatedRoute } from '@angular/router';
 import { Component } from '@angular/core';
 // Services
@@ -29,21 +30,29 @@ export class HomeComponent {
     private prodManageService: ProductManagementService
   ) {
     // ################## //
-    prodManageService.getAll()
-      .pipe(
-        take(1),
-        switchMap(products => {
-        this.products = products;
-        this.products.forEach(element => {
-          this.favList[element.key] = false;
-        });
-        // ################## //
-        return route.queryParamMap;
-        })
-      ).subscribe(params => {
-          const category = ( params.get('category')) ? params.get('category') : 'all';
-          this.filteredProducts = (category === 'all') ? this.products :
-          this.products.filter(p => p.selectedCategory.toLowerCase().includes(category.toLowerCase())) ;
-        });
+    this.populateProducts();
+  }
+
+  private populateProducts() {
+    this.prodManageService.getAll()
+    .pipe(
+      take(1),
+      switchMap(products => {
+      this.products = products;
+      this.products.forEach(element => {
+        this.favList[element.key] = false;
+      });
+      // ################## //
+      return this.route.queryParamMap;
+      })
+    ).subscribe(params => {
+        const category = ( params.get('category')) ? params.get('category') : 'all';
+        this.applyFilter(category);
+      });
+  }
+
+  private applyFilter(category) {
+    this.filteredProducts = (category === 'all') ? this.products :
+    this.products.filter(p => p.selectedCategory.toLowerCase().includes(category.toLowerCase())) ;
   }
 }

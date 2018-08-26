@@ -1,100 +1,44 @@
 import { Observable } from 'rxjs/Observable';
-import { CartItem } from './../../models/cart-item';
-import { element } from 'protractor';
-import { AuthService } from './../../services/auth/auth.service';
-import { take } from 'rxjs/operators';
-import { ShoppingService } from './../../services/shopping/shopping.service';
-import { Component, OnInit, AfterContentChecked} from '@angular/core';
+import { ShoppingService } from '../../services/shopping/shopping.service';
+import { Component, OnInit} from '@angular/core';
+import { ShoppingCart } from '../../models/shopping-cart';
 
 @Component({
   selector: 'app-shopping-cart',
   templateUrl: './shopping-cart.component.html',
   styleUrls: ['./shopping-cart.component.css']
 })
-export class ShoppingCartComponent implements OnInit, AfterContentChecked {
+export class ShoppingCartComponent implements OnInit {
 
-  cartItems$;
-  // cartItemsCount = 0;
+  cart$: Observable<ShoppingCart>;
+  cartItemsCount$: String;
+  pricePerRow: number[];
   totalPrice = 0;
-  private userLoggedIn: boolean;
-  private uid: string;
   constructor(
-    private authService: AuthService,
     private shoppingService: ShoppingService
   ) {
-    this.readCart();
   }
 
-  ngOnInit() {}
-  ngAfterContentChecked()  {
-    this.totalPrice = 0;
-    if (this.cartItems$ != null) {
-      this.cartItems$.forEach(item => {
-        this.totalPrice += item.price * item.count;
-      });
-    }
+
+  async ngOnInit() {
+    this.cart$ = await this.shoppingService.getCartItems();
   }
 
-  private readCart() {
-    this.authService.user.subscribe(user => {
-      if (!user) { this.userLoggedIn = false; }
 
-      this.uid = user.uid;
-      this.userLoggedIn = true;
 
-      if (!this.userLoggedIn) {
-        this.readFromLocal();
-      } else {
-        this.readFromDB();
-      }
-    });
+ // ################## //
+ private async readCartAnnoymousUser() {
+   if (!localStorage.getItem('userId')) {
+    this.cart$ = await this.shoppingService.getCartItems();
+   }
+}
+
+
+  updateQuantity() {
+    this.readCartAnnoymousUser();
   }
-
-  // private countTotalCartItems() {
-  //   this.cartItems$.forEach(item => {
-  //     this.cartItemsCount += item.count;
-  //   });
-  // }
-
-  private readFromLocal() {
-    this.cartItems$ = this.shoppingService.getCartLocal();
-  }
-
-  private readFromDB() {
-    this.shoppingService.getCartFromDB(this.uid).then(cartItems => {
-        this.cartItems$ = cartItems;
-    });
-  }
-
-  increaseQuantity(index, productKey) {
-  //  this.cartItemsCount += 1;
-   // this.cartItems$[index].count += 1;
-    // ################# //
-    if (!this.userLoggedIn) {
-      this.shoppingService.updateCountLocal(productKey, 1);
-    } else {
-      this.shoppingService.updateCountFromDB(this.uid, productKey, 1);
-    }
-  }
-
-  decreaseQuantity(index, productKey) {
-  //  this.cartItemsCount -= 1;
-   // this.cartItems$[index].count -= 1;
-    // ################# //
-    if (!this.userLoggedIn) {
-      this.shoppingService.updateCountLocal(productKey, -1);
-    } else {
-      this.shoppingService.updateCountFromDB(this.uid, productKey, -1);
-    }
-  }
-
-  clearShoppingCart() {
-   // this.cartItemsCount = 0;
-    this.cartItems$ = [];
-    if (!this.userLoggedIn) {
-      this.shoppingService.clearCartStorage();
-    } else {
-      this.shoppingService.clearCartFromDB(this.uid);
-    }
+  async clearShoppingCart() {
+    await this.shoppingService.clearCart();
+    await this.readCartAnnoymousUser();
   }
 }

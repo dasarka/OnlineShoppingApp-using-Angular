@@ -1,9 +1,13 @@
-import { Component } from '@angular/core';
+import { CartItem } from '../../models/cart-item';
+import { Observable } from 'rxjs/Observable';
+import { Component, OnInit } from '@angular/core';
 // Services
 import { AuthService } from '../../services/auth/auth.service';
 // Models
 import { AppUser } from '../../models/app-users';
 import { UserRole} from '../../models/user-roles';
+import { ShoppingService } from '../../services/shopping/shopping.service';
+import { ShoppingCart } from '../../models/shopping-cart';
 
 /*
 **Developed By: Arka Das
@@ -15,25 +19,32 @@ import { UserRole} from '../../models/user-roles';
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.css']
 })
-export class NavbarComponent {
+export class NavbarComponent implements OnInit {
   // ################## //
-  cartItemsCount: string;
+  cart$: Observable<ShoppingCart>;
   appUser: AppUser;
   userRole: UserRole;
   // ################## //
-  constructor(private authService: AuthService) {
+  constructor(
+    private authService: AuthService,
+    private shoppingService: ShoppingService
+  ) {}
+
+  async ngOnInit() {
+
     this.userRole = {admin: false};
-    const itemsCount = localStorage.getItem('cart-item-count');
-    this.cartItemsCount = (itemsCount) ? itemsCount : '0';
     // ################## //
-    authService.appUser$.subscribe(user => {
+    this.authService.appUser$.subscribe(user => {
       this.appUser = user;
     });
     // ################## //
-    authService.userRole$.subscribe(role => {
+    this.authService.userRole$.subscribe(role => {
       this.userRole = (role === null) ? {admin: false} : role;
     });
-   }
+
+    this.cart$ = await this.shoppingService.getCartItems();
+  }
+
   // ################## //
   login() {
     this.authService.login();
