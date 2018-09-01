@@ -6,8 +6,8 @@ import { DataService } from 'database/services/data/data.service';
 import { Observable } from 'rxjs/Observable';
 import { switchMap } from 'rxjs/operators';
 
-import { CheckOut } from '../../models/check-out';
-import { MyOrders } from '../../models/my-orders';
+import { CheckOut } from 'shopping//models/check-out';
+import { MyOrders } from 'shopping//models/my-orders';
 
 @Injectable({
   providedIn: 'root'

@@ -4,9 +4,9 @@ import { Observable } from 'rxjs/Observable';
 import { take } from 'rxjs/operators';
 import { ShoppingCart } from 'shared/models/shopping-cart';
 import { ShoppingService } from 'shared/services/shopping/shopping.service';
+import { OrderService } from 'shopping/services/order/order.service';
+import { Order } from 'shopping/models/order';
 
-import { Order } from '../../models/order';
-import { OrderService } from '../../services/order/order.service';
 
 
 
