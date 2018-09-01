@@ -16,6 +16,26 @@
     "lib": [
       "es2017",
       "dom"
-    ]
+    ],
+    "paths" : {
+      "shared/*": [
+        "src/app/shared/*"
+      ],
+      "database/*": [
+        "src/app/database/*"
+      ],
+      "admin/*": [
+        "src/app/admin/*"
+      ],
+      "shopping/*": [
+        "src/app/shopping/*"
+      ],
+      "features/*": [
+        "src/app/features/*"
+      ],
+      "core/*": [
+        "src/app/core/*"
+      ],
+    }
   }
 }

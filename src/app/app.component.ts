@@ -1,9 +1,9 @@
-import { ShoppingService } from './services/shopping/shopping.service';
+import { ShoppingService } from 'shared/services/shopping/shopping.service';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 // Services
-import { UserService } from './services/user/user.service';
-import { AuthService } from './services/auth/auth.service';
+import { UserService } from 'database/services/user/user.service';
+import { AuthService } from 'shared/services/auth/auth.service';
 
 /*
 **Developed By: Arka Das
