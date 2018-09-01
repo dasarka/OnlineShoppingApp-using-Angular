@@ -16,7 +16,7 @@ import {take} from 'rxjs/operators';
 */
 
 @Component({
-  selector: 'app-product-form',
+  selector: 'app-admin-product-form',
   templateUrl: './product-form.component.html',
   styleUrls: ['./product-form.component.css']
 })

@@ -6,6 +6,8 @@ import { ShoppingCart } from 'shared/models/shopping-cart';
 import { ShoppingService } from 'shared/services/shopping/shopping.service';
 import { OrderService } from 'shopping/services/order/order.service';
 import { Order } from 'shopping/models/order';
+import { AuthService } from 'shared/services/auth/auth.service';
+import { AppUser } from 'shared/models/app-users';
 
 
 
@@ -15,11 +17,14 @@ import { Order } from 'shopping/models/order';
   templateUrl: './check-out.component.html',
   styleUrls: ['./check-out.component.css']
 })
+
 export class CheckOutComponent implements OnInit {
   cart$: Observable<ShoppingCart>;
   checkOutForm;
+  private appUser: AppUser;
   constructor(
     fb: FormBuilder,
+    private authService: AuthService,
     private shoppingService: ShoppingService,
     private orderService: OrderService
   ) {
@@ -37,9 +42,9 @@ export class CheckOutComponent implements OnInit {
 
   async ngOnInit() {
     this.cart$ = await this.shoppingService.getCartItems();
-    // this.checkOutForm.setErrors({
-    //   emptyCart : false
-    // });
+    this.authService.appUser$.pipe(take(1)).subscribe(user => {
+      this.appUser = user;
+    });
   }
 
   get name() {
@@ -54,7 +59,7 @@ export class CheckOutComponent implements OnInit {
 
   placeOrder() {
     this.cart$.pipe(take(1)).subscribe(cart => {
-    const orderDetails = new Order(cart.cartItems, this.checkOutForm.value);
+    const orderDetails = new Order(cart.cartItems, this.checkOutForm.value, this.appUser.name);
       if ( orderDetails.isValidOrder) {
         this.orderService.createOrder(orderDetails.orderDetails);
       }

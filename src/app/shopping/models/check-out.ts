@@ -7,6 +7,7 @@ import { CartItem } from 'shared/models/cart-item';
 
 export interface CheckOut {
     dateOfCreation: string;
+    customerName: string;
     items: CartItem[];
     shippingDetails: any;
     key ?: string;

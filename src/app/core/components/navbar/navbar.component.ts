@@ -1,13 +1,11 @@
-import { CartItem } from 'shared/models/cart-item';
-import { Observable } from 'rxjs/Observable';
 import { Component, OnInit } from '@angular/core';
-// Services
-import { AuthService } from 'shared/services/auth/auth.service';
-// Models
+import { Observable } from 'rxjs/Observable';
 import { AppUser } from 'shared/models/app-users';
-import { UserRole} from 'shared/models/user-roles';
-import { ShoppingService } from 'shared/services/shopping/shopping.service';
 import { ShoppingCart } from 'shared/models/shopping-cart';
+import { UserRole } from 'shared/models/user-roles';
+import { AuthService } from 'shared/services/auth/auth.service';
+import { ShoppingService } from 'shared/services/shopping/shopping.service';
+import { take } from 'rxjs/operators';
 
 /*
 **Developed By: Arka Das
@@ -34,11 +32,11 @@ export class NavbarComponent implements OnInit {
 
     this.userRole = {admin: false};
     // ################## //
-    this.authService.appUser$.subscribe(user => {
+    this.authService.appUser$.pipe(take(1)).subscribe(user => {
       this.appUser = user;
     });
     // ################## //
-    this.authService.userRole$.subscribe(role => {
+    this.authService.userRole$.pipe(take(1)).subscribe(role => {
       this.userRole = (role === null) ? {admin: false} : role;
     });
 

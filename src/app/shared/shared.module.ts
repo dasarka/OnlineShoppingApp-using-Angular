@@ -17,13 +17,11 @@ import { ShoppingService } from './services/shopping/shopping.service';
     DatabaseModule
   ],
   exports: [
-    NavbarComponent,
     ProductCardComponent,
     ProductQuantityComponent,
     OrderCardComponent
   ],
   declarations: [
-    NavbarComponent,
     ProductCardComponent,
     ProductQuantityComponent,
     OrderCardComponent

@@ -1,12 +1,8 @@
-import { Category } from 'shared/models/category';
-import { ActivatedRoute } from '@angular/router';
 import { Component } from '@angular/core';
-// Services
-import { ProductManagementService } from 'shared/services/product/product-management.service';
-// Models
-import { Product } from 'shared/models/product';
-// Observables
+import { ActivatedRoute } from '@angular/router';
 import { switchMap, take } from 'rxjs/operators';
+import { Product } from 'shared/models/product';
+import { ProductManagementService } from 'shared/services/product/product-management.service';
 
 /*
 **Developed By: Arka Das

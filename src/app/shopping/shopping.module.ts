@@ -20,22 +20,22 @@ const shoppingRoutes: Routes = [
   {
     path: 'check-out/success',
     component: OrderSuccessComponent,
-    canActivate : [AuthGuard]
+    canActivateChild : [AuthGuard]
   },
   {
     path: 'check-out',
     component: CheckOutComponent,
-    canActivate : [AuthGuard]
+    canActivateChild : [AuthGuard]
   },
   {
     path: 'my/orders/:orderId',
     component: OrderDetailsComponent,
-    canActivate : [AuthGuard]
+    canActivateChild : [AuthGuard]
   },
   {
     path: 'my/orders',
     component: OrdersComponent,
-    canActivate : [AuthGuard]
+    canActivateChild : [AuthGuard]
   }
 ];
 
