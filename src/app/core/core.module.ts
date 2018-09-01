@@ -1,23 +1,22 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { NavbarComponent } from 'core/components/navbar/navbar.component';
 import { HomeComponent } from 'core/components/home/home.component';
 import { NotFoundComponent } from 'core/exceptions/not-found/not-found.component';
 import { ProductFilterComponent } from 'core/components/product-filter/product-filter.component';
 import { RouterModule } from '@angular/router';
+import { SharedModule } from 'shared/shared.module';
 
 
 @NgModule({
   imports: [
     CommonModule,
-    [RouterModule.forChild([])]
+    [RouterModule.forChild([])],
+    SharedModule
   ],
   exports: [
-    NavbarComponent,
     HomeComponent
   ],
   declarations: [
-    NavbarComponent,
     HomeComponent,
     NotFoundComponent,
     ProductFilterComponent
