@@ -11,3 +11,9 @@ nav{
     padding: 0px 10px;
     color: #000;
 }
+.logo{
+    width:5%;
+}
+.logo > img {
+    width: 75%;
+}

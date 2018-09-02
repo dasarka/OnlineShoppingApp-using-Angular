@@ -46,7 +46,7 @@ const adminRoutes: Routes = [
   ],
   providers: [
     AdminAuthGuard,
-    ManageOrdersService
-  ],
+    ManageOrdersService,
+  ]
 })
 export class AdminModule { }

@@ -6,20 +6,59 @@
       <th>Date</th>
       <th>Customer Name</th>
       <th>Shipping Details</th>
+      <th></th>
     </tr>
   </thead>
   <tbody>
     <tr
-      *ngFor="let order of orders.orderDetails">
-      <td>{{order.orderID}}</td>
-      <td>{{order.dateOfCreation | date:'MMM d, y'}}</td>
+      *ngFor="let order of orders.list">
+      <td>
+          {{order.orderNo}}
+      </td>
+      <td>{{order.details.dateOfCreation | date:'MMM d, y'}}</td>
       <td>
         <!-- <a [routerLink]="['/my/orders/',order.key]">View</a> -->
-        {{order.customerName}}
+        {{order.details.customerName}}
       </td>
       <td>
-        <p>Name: {{order.shipping.name}}</p>
+        <p>Name: {{order.details.shippingDetails.name}}</p>
+        <p>Address: {{order.details.shippingDetails.address}}</p>
+        <p>City: {{order.details.shippingDetails.city}}</p>
       </td>
+      <td>
+          <button class="btn btn-sm btn-primary" 
+            type="button"
+            data-toggle="modal" 
+            data-target="#orderModal">
+              View Order
+          </button>
+      </td>
+
     </tr>
   </tbody>
 </table>
+
+<!-- The Modal -->
+<div class="modal" id="orderModal">
+    <div class="modal-dialog">
+      <div class="modal-content">
+  
+        <!-- Modal Header -->
+        <div class="modal-header">
+          <h4 class="modal-title">Modal Heading</h4>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+  
+        <!-- Modal body -->
+        <div class="modal-body">
+          Modal body..
+        </div>
+  
+        <!-- Modal footer -->
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+        </div>
+  
+      </div>
+    </div>
+  </div>

@@ -36,6 +36,9 @@
       "core/*": [
         "src/app/core/*"
       ],
+      "assets/*": [
+        "src/app/assets/*"
+      ],
     }
   }
 }

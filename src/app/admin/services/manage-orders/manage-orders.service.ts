@@ -1,3 +1,4 @@
+import { AllOrders } from './../../models/all-order';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { ManageOrder } from 'admin/models/manage-order';
@@ -11,23 +12,17 @@ import { switchMap } from 'rxjs/operators';
 export class ManageOrdersService {
 
 constructor(
-  private router: Router,
   private dataService: DataService
 ) { }
 
-private async getUserId() {
-  return localStorage.getItem('userId');
-}
-
-async getAllOrder(): Promise<Observable<ManageOrder[]>> {
-  const uid = await this.getUserId();
+async getAllOrder(): Promise<Observable<AllOrders>> {
   return this.dataService.getAll('/order-details/').pipe(
     switchMap(orders => {
       if (orders) {
-        return Observable.of(orders);
+        return Observable.of( new AllOrders(orders));
       }
 
-      return Observable.of(null);
+      return Observable.of(new AllOrders([]));
     })
   );
 }
