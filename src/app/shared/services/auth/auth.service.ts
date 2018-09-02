@@ -44,9 +44,9 @@ export class AuthService {
   // ********************************************************************************************** //
   // Logout
   // ********************************************************************************************** //
-  logout() {
-    localStorage.removeItem('userId');
-    this.afAuth.auth.signOut();
+  async logout() {
+    await localStorage.removeItem('userId');
+    await this.afAuth.auth.signOut();
   }
   // ********************************************************************************************** //
   get appUser$(): Observable<AppUser> {

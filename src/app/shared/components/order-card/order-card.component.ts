@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, OnChanges } from '@angular/core';
 import { CartItem } from 'shared/models/cart-item';
 import { ShoppingCart } from 'shared/models/shopping-cart';
 
@@ -8,13 +8,22 @@ import { ShoppingCart } from 'shared/models/shopping-cart';
   templateUrl: './order-card.component.html',
   styleUrls: ['./order-card.component.css']
 })
-export class OrderCardComponent implements OnInit {
+export class OrderCardComponent implements OnInit, OnChanges {
   @Input('cartItems') cartItems: CartItem[];
   cart;
   constructor() { }
 
    ngOnInit() {
-    this.cart = new ShoppingCart(this.cartItems);
+     if (this.cartItems.length > 0) {
+        this.cart = new ShoppingCart(this.cartItems);
+     }
+   }
+
+   ngOnChanges() {
+     if (this.cartItems.length > 0) {
+        this.cart = new ShoppingCart(this.cartItems);
+     }
+
    }
 
 }

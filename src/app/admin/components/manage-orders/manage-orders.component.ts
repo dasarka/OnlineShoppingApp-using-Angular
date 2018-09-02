@@ -1,10 +1,8 @@
-import { CartItem } from 'shared/models/cart-item';
-import { AllOrders } from './../../models/all-order';
 import { Component, OnInit } from '@angular/core';
-import { NgbActiveModal , NgbModal } from '@ng-bootstrap/ng-bootstrap';
-
 import { Observable } from 'rxjs';
+import { CartItem } from 'shared/models/cart-item';
 
+import { AllOrders } from './../../models/all-order';
 import { ManageOrdersService } from './../../services/manage-orders/manage-orders.service';
 
 @Component({
@@ -15,9 +13,8 @@ import { ManageOrdersService } from './../../services/manage-orders/manage-order
 export class ManageOrdersComponent implements OnInit {
   closeResult: string;
   orders$: Observable<AllOrders>;
-  items: CartItem[];
+  items: CartItem[] = [];
   constructor(
-    private modalService: NgbModal,
     private manageOrderService: ManageOrdersService
   ) {
    }
@@ -26,9 +23,8 @@ export class ManageOrdersComponent implements OnInit {
     this.orders$ = await this.manageOrderService.getAllOrder();
   }
 
-  open(content) {
+  async open(content) {
     this.items = content;
-    // this.modalService.open();
   }
 
 

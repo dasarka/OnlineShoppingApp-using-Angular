@@ -1,64 +1,48 @@
-<table class="table table-striped"
-  *ngIf="orders$ | async as orders">
-  <thead>
-    <tr>
-      <th>Order NO</th>
-      <th>Date</th>
-      <th>Customer Name</th>
-      <th>Shipping Details</th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr
-      *ngFor="let order of orders.list">
-      <td>
-          {{order.orderNo}}
-      </td>
-      <td>{{order.details.dateOfCreation | date:'MMM d, y'}}</td>
-      <td>
-        <!-- <a [routerLink]="['/my/orders/',order.key]">View</a> -->
-        {{order.details.customerName}}
-      </td>
-      <td>
-        <p>Name: {{order.details.shippingDetails.name}}</p>
-        <p>Address: {{order.details.shippingDetails.address}}</p>
-        <p>City: {{order.details.shippingDetails.city}}</p>
-      </td>
-      <td>
-          <button class="btn btn-sm btn-primary" 
-            type="button"
-            data-toggle="modal" 
-            data-target="#orderModal">
-              View Order
-          </button>
-      </td>
-
-    </tr>
-  </tbody>
-</table>
-
-<!-- The Modal -->
-<div class="modal" id="orderModal">
-    <div class="modal-dialog">
-      <div class="modal-content">
-  
-        <!-- Modal Header -->
-        <div class="modal-header">
-          <h4 class="modal-title">Modal Heading</h4>
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
-        </div>
-  
-        <!-- Modal body -->
-        <div class="modal-body">
-          Modal body..
-        </div>
-  
-        <!-- Modal footer -->
-        <div class="modal-footer">
-          <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-        </div>
-  
-      </div>
-    </div>
+<div class="row">
+  <div class="col-8">
+      <h4>Order Summary</h4>
+      <table class="table table-striped"
+      *ngIf="orders$ | async as orders">
+      <thead>
+        <tr>
+          <th>Order NO</th>
+          <th>Date</th>
+          <th>Customer Name</th>
+          <th>Shipping Details</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr
+          *ngFor="let order of orders.list">
+          <td>
+              {{order.orderNo}}
+          </td>
+          <td>{{order.details.dateOfCreation | date:'MMM d, y'}}</td>
+          <td>
+            {{order.details.customerName}}
+          </td>
+          <td>
+            <p>Name: {{order.details.shippingDetails.name}}</p>
+            <p>Address: {{order.details.shippingDetails.address}}</p>
+            <p>City: {{order.details.shippingDetails.city}}</p>
+          </td>
+          <td>
+              <button class="btn btn-sm btn-primary" 
+                type="button"
+                (click)="open(order.details.items)">
+                  Open Order
+              </button>
+          </td>
+    
+        </tr>
+      </tbody>
+    </table>
   </div>
+  <div class="col-4">
+    <h4>Order Details</h4>
+    <app-order-card
+      [cartItems]="items"
+    ></app-order-card>
+  </div>
+</div>

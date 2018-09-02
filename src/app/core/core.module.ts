@@ -8,7 +8,6 @@ import { RouterModule } from '@angular/router';
 import { SharedModule } from 'shared/shared.module';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
-
 @NgModule({
   imports: [
     CommonModule,
